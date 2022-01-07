@@ -41,7 +41,8 @@ class _MapScreenState extends State<MapScreen> {
           center: LatLng(widget.initialLocation.latitude,
               widget.initialLocation.longitude),
           zoom: 16.0,
-          onTap: widget.isSelecting ? _selectLocation : null,
+          //onTap: widget.isSelecting ? _selectLocation: null,
+          onTap: widget.isSelecting ? _selectLocation : () {},
         ),
         layers: [
           TileLayerOptions(
