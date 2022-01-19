@@ -3,6 +3,7 @@ import 'package:flutter_map/flutter_map.dart';
 
 import 'package:latlong2/latlong.dart';
 import 'package:native_func_app/models/place.dart';
+import 'package:positioned_tap_detector_2/positioned_tap_detector_2.dart';
 
 import '../models/place.dart';
 
@@ -24,7 +25,7 @@ class MapScreen extends StatefulWidget {
 class _MapScreenState extends State<MapScreen> {
   LatLng _pickedLocation;
 
-  void _selectLocation(LatLng position) {
+  void _selectLocation(TapPosition tapPosition, LatLng position) {
     setState(() {
       _pickedLocation = position;
     });
@@ -42,7 +43,9 @@ class _MapScreenState extends State<MapScreen> {
               widget.initialLocation.longitude),
           zoom: 16.0,
           //onTap: widget.isSelecting ? _selectLocation: null,
-          onTap: widget.isSelecting ? _selectLocation : () {},
+          onTap: widget.isSelecting
+              ? _selectLocation
+              : (TapPosition tapPosition, LatLng position) {},
         ),
         layers: [
           TileLayerOptions(
