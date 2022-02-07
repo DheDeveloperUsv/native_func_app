@@ -6,6 +6,7 @@ import 'package:native_func_app/models/place.dart';
 import 'package:positioned_tap_detector_2/positioned_tap_detector_2.dart';
 
 import '../models/place.dart';
+import '../helpers/location_helpers.dart';
 
 class MapScreen extends StatefulWidget {
   //const MapScreen({ Key? key }) : super(key: key);
@@ -36,38 +37,47 @@ class _MapScreenState extends State<MapScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Your Map'),
+        actions: [
+          if (widget.isSelecting)
+            IconButton(
+                onPressed: _pickedLocation == null
+                    ? null
+                    : () {
+                        Navigator.of(context).pop(_pickedLocation);
+                      },
+                icon: Icon(Icons.check))
+        ],
       ),
       body: FlutterMap(
         options: MapOptions(
-          center: LatLng(widget.initialLocation.latitude,
-              widget.initialLocation.longitude),
-          zoom: 16.0,
-          //onTap: widget.isSelecting ? _selectLocation: null,
-          onTap: widget.isSelecting
-              ? _selectLocation
-              : (TapPosition tapPosition, LatLng position) {},
-        ),
+            center: LatLng(widget.initialLocation.latitude,
+                widget.initialLocation.longitude),
+            zoom: 16.0,
+            //onTap: widget.isSelecting ? _selectLocation: null,
+            // onTap: widget.isSelecting
+            //     ? _selectLocation
+            //     : (TapPosition tapPosition, LatLng position) {},
+            onTap: widget.isSelecting ? _selectLocation : null),
         layers: [
           TileLayerOptions(
               urlTemplate:
-                  "https://api.mapbox.com/styles/v1/dhe/ckwd8qofr09gd14oq5d8djor9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoiZGhlIiwiYSI6ImNrdnFybGw4ZzI1cWgycm91MXBpcW9oN3kifQ.fzK2_BFZrGU_vMpwTuU2Kg",
-              /*subdomains: ['a', 'b', 'c'],
-            attributionBuilder: (_) {
-              return Text("© OpenStreetMap contributors");
-            },*/
+                  "https://api.mapbox.com/styles/v1/dhe/ckyvmmys8003c15l4crl1repj/tiles/256/{z}/{x}/{y}@2x?access_token=$MAPBOX_API_KEY",
               additionalOptions: {
-                'accessToken':
-                    'pk.eyJ1IjoiZGhlIiwiYSI6ImNrdnFybGw4ZzI1cWgycm91MXBpcW9oN3kifQ.fzK2_BFZrGU_vMpwTuU2Kg',
+                'accessToken': '$MAPBOX_API_KEY',
                 'id': 'mapbox.mapbox-streets-v8',
               }),
           MarkerLayerOptions(
-            markers: _pickedLocation == null
+            markers: (_pickedLocation == null && widget.isSelecting)
                 ? []
                 : [
                     Marker(
-                      point: _pickedLocation,
+                      point: _pickedLocation ??
+                          LatLng(
+                            widget.initialLocation.latitude,
+                            widget.initialLocation.longitude,
+                          ),
                       builder: (ctx) => Container(
-                        child: FlutterLogo(),
+                        child: Icon(Icons.location_on),
                       ),
                     ),
                   ],
